@@ -1,0 +1,9 @@
+{
+	"id": "cursor-torch",
+	"name": "Cursor Torch",
+	"version": "1.0.0",
+	"minAppVersion": "1.4.0",
+	"description": "Turns the text cursor into a flickering torch: a warm glow lights the text around the caret while the rest of the note fades into darkness.",
+	"author": "shrikin",
+	"isDesktopOnly": false
+}
