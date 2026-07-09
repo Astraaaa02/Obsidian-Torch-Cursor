@@ -1,0 +1,148 @@
+/* ── Darkness overlay — the page is dark, the cursor is the light ── */
+
+.cursor-torch-darkness {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 40;
+	opacity: 1;
+	transition: opacity 250ms ease;
+	background: radial-gradient(
+		circle at var(--cursor-torch-x, 50%) var(--cursor-torch-y, 50%),
+		transparent 0px,
+		transparent calc(var(--cursor-torch-reach, 240px) * 0.35),
+		rgba(0, 0, 0, calc(var(--cursor-torch-darkness, 0.85) * 0.7)) calc(var(--cursor-torch-reach, 240px) * 0.8),
+		rgba(0, 0, 0, var(--cursor-torch-darkness, 0.85)) calc(var(--cursor-torch-reach, 240px) * 1.4)
+	);
+}
+
+body:not(.cursor-torch-darkness-on) .cursor-torch-darkness,
+.cursor-torch-darkness.cursor-torch-hidden {
+	opacity: 0;
+}
+
+/* ── Torch glow ──────────────────────────────────────────────── */
+
+.cursor-torch-glow {
+	position: absolute;
+	/* Vertical flame shape: taller than wide, hugging the caret */
+	width: calc(var(--cursor-torch-size, 130px) * 0.62);
+	height: var(--cursor-torch-size, 130px);
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	border-radius: 50%;
+	z-index: 50;
+	opacity: var(--cursor-torch-intensity, 0.9);
+	mix-blend-mode: screen;
+	background: radial-gradient(
+		ellipse at center,
+		#fff6e0 0%,
+		color-mix(in srgb, var(--cursor-torch-color, #ff9a3d) 85%, #fff2c0) 10%,
+		var(--cursor-torch-color, #ff9a3d) 24%,
+		color-mix(in srgb, var(--cursor-torch-color, #ff9a3d) 40%, transparent) 44%,
+		transparent 68%
+	);
+	transition: opacity 120ms ease-out;
+	will-change: left, top, opacity;
+}
+
+/* Faint ambient halo — soft light spill reaching a few lines around the flame */
+.cursor-torch-glow::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 400%;
+	height: 320%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background: radial-gradient(
+		ellipse at center,
+		color-mix(in srgb, var(--cursor-torch-color, #ff9a3d) 16%, transparent) 0%,
+		color-mix(in srgb, var(--cursor-torch-color, #ff9a3d) 9%, transparent) 40%,
+		transparent 72%
+	);
+}
+
+/* Hot inner streak — the bright vertical core right around the caret */
+.cursor-torch-glow::before {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 14%;
+	height: 46%;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background: radial-gradient(
+		ellipse at center,
+		#fffdf5 0%,
+		#ffe9b0 35%,
+		color-mix(in srgb, var(--cursor-torch-color, #ff9a3d) 70%, transparent) 65%,
+		transparent 100%
+	);
+	filter: blur(3px);
+}
+
+.cursor-torch-glow.cursor-torch-hidden {
+	opacity: 0;
+}
+
+/* Screen blend does nothing useful on light backgrounds — fall back to a soft overlay */
+body.theme-light .cursor-torch-glow {
+	mix-blend-mode: normal;
+	opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.45);
+}
+body.theme-light .cursor-torch-glow.cursor-torch-hidden {
+	opacity: 0;
+}
+
+/* ── Flicker ─────────────────────────────────────────────────── */
+
+body.cursor-torch-flicker .cursor-torch-glow:not(.cursor-torch-hidden) {
+	animation: cursor-torch-flicker 2.4s infinite;
+	transition: none;
+}
+
+@keyframes cursor-torch-flicker {
+	0%   { opacity: var(--cursor-torch-intensity, 0.9); transform: translate(-50%, -50%) scale(1); }
+	7%   { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.82); transform: translate(-50%, -50%) scale(0.965); }
+	13%  { opacity: var(--cursor-torch-intensity, 0.9); transform: translate(-50%, -50%) scale(1.02); }
+	21%  { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.9); transform: translate(-50%, -50%) scale(0.99); }
+	34%  { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.78); transform: translate(-50%, -50%) scale(0.95); }
+	42%  { opacity: var(--cursor-torch-intensity, 0.9); transform: translate(-50%, -50%) scale(1.03); }
+	55%  { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.88); transform: translate(-50%, -50%) scale(0.98); }
+	67%  { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.95); transform: translate(-50%, -50%) scale(1.01); }
+	76%  { opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.8); transform: translate(-50%, -50%) scale(0.96); }
+	88%  { opacity: var(--cursor-torch-intensity, 0.9); transform: translate(-50%, -50%) scale(1.02); }
+	100% { opacity: var(--cursor-torch-intensity, 0.9); transform: translate(-50%, -50%) scale(1); }
+}
+
+body.theme-light.cursor-torch-flicker .cursor-torch-glow:not(.cursor-torch-hidden) {
+	animation: none;
+	opacity: calc(var(--cursor-torch-intensity, 0.9) * 0.45);
+}
+
+/* ── Ember caret (gradient bar like the screenshot) ──────────── */
+
+body.cursor-torch-ember-caret .markdown-source-view .cm-cursorLayer .cm-cursor,
+body.cursor-torch-ember-caret .markdown-source-view .cm-cursorLayer .cm-cursor-primary {
+	border-left: none;
+	width: 3px;
+	margin-left: -1.5px;
+	border-radius: 2px;
+	background: linear-gradient(
+		180deg,
+		#ffe27a 0%,
+		#ffab4a 35%,
+		#f4649a 70%,
+		#8e58e8 100%
+	);
+	box-shadow: 0 0 8px 2px rgba(255, 160, 70, 0.75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body.cursor-torch-flicker .cursor-torch-glow:not(.cursor-torch-hidden) {
+		animation: none;
+	}
+}

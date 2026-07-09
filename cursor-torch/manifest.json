@@ -1,0 +1,9 @@
+{
+	"id": "cursor-torch",
+	"name": "Cursor Torch",
+	"version": "1.0.0",
+	"minAppVersion": "1.4.0",
+	"description": "A warm, flickering torch glow that follows your cursor in the editor, with an optional ember-gradient caret.",
+	"author": "shrikin",
+	"isDesktopOnly": false
+}

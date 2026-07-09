@@ -1,0 +1,10 @@
+{
+  "size": 40,
+  "intensity": 0.35,
+  "color": "#ff9a3d",
+  "flicker": true,
+  "emberCaret": false,
+  "onlyFocused": true,
+  "darkness": 0.65,
+  "reach": 160
+}
